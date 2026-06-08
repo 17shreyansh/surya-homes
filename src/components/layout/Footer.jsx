@@ -149,7 +149,7 @@ export default function Footer() {
                 transition={{ duration: 0.4, ease: easeCustom }}
                 src={logoImage} 
                 alt={SITE_NAME} 
-                style={{ width: '56px', height: '56px', objectFit: 'contain' }}
+                style={{ height: '48px', width: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 0 8px rgba(212, 175, 55, 0.15))' }}
               />
             </Link>
             <span style={styles.overline}>Architectural Excellence</span>

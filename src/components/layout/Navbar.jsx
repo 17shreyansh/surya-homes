@@ -11,53 +11,54 @@ const easeCustom = [0.16, 1, 0.3, 1]
 
 // Precise visual control objects
 const colors = {
-  navy: '#0A0F1C',
+  navy: '#08111F',
   black: '#000000',
-  charcoal: '#1A1A1A',
+  charcoal: '#101826',
   gold: '#D4AF37',
-  cyan: '#00E5FF',
-  white: '#FFFFFF',
+  white: '#F8F6F2',
 }
 
 const styles = {
   header: (scrolled) => ({
-    backgroundColor: scrolled ? 'rgba(10, 15, 28, 0.85)' : 'transparent',
-    backdropFilter: scrolled ? 'blur(24px)' : 'none',
-    WebkitBackdropFilter: scrolled ? 'blur(24px)' : 'none',
-    borderBottom: scrolled ? `1px solid ${colors.gold}20` : '1px solid transparent',
+    backgroundColor: scrolled ? 'rgba(8, 17, 31, 0.9)' : 'transparent',
+    backdropFilter: scrolled ? 'blur(28px)' : 'none',
+    WebkitBackdropFilter: scrolled ? 'blur(28px)' : 'none',
+    borderBottom: scrolled ? `1px solid ${colors.gold}25` : '1px solid transparent',
     transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
   }),
   navLink: {
     fontSize: '11px',
     textTransform: 'uppercase',
-    letterSpacing: '0.2em',
+    letterSpacing: '0.22em',
     fontWeight: 500,
     position: 'relative',
-    padding: '8px 0',
+    padding: '10px 0',
   },
   btnPrimary: {
     border: `1px solid ${colors.gold}`,
     color: colors.gold,
-    fontSize: '11px',
+    fontSize: '10px',
     textTransform: 'uppercase',
-    letterSpacing: '0.15em',
-    padding: '10px 24px',
+    letterSpacing: '0.18em',
+    padding: '12px 28px',
     display: 'flex',
     alignItems: 'center',
-    gap: '8px',
-    transition: 'all 0.4s ease',
+    gap: '10px',
+    transition: 'all 0.5s ease',
   }
 }
 
 const Logo = () => (
-  <Link to="/" style={{ display: 'block' }}>
+  <Link to="/" style={{ display: 'block', height: '100%', display: 'flex', alignItems: 'center' }}>
     <img 
       src={logoImage} 
       alt={SITE_NAME} 
-      className="w-12 h-12 sm:w-14 sm:h-14"
       style={{ 
+        height: '70%',
+        width: 'auto',
         objectFit: 'contain',
-        transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+        transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        filter: 'drop-shadow(0 0 8px rgba(212, 175, 55, 0.15))'
       }}
       onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
       onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
@@ -98,7 +99,7 @@ export default function Navbar() {
           willChange: 'transform, opacity, background-color'
         }}
       >
-        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 flex items-center justify-between h-20 sm:h-24">
+        <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-8 md:px-12 lg:px-20 flex items-center justify-between h-20 sm:h-24">
           <Logo />
 
           {/* Desktop Nav */}

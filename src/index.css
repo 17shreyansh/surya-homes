@@ -4,11 +4,12 @@
 
 @layer base {
   :root {
-    --gold: #C9A455;
-    --gold-light: #E4C474;
-    --gold-dark: #9E7B2F;
-    --obsidian: #0A0B0D;
-    --cream: #F0EAD6;
+    --gold: #D4AF37;
+    --gold-light: #E8C76A;
+    --gold-dark: #B8972D;
+    --obsidian: #08111F;
+    --charcoal: #101826;
+    --cream: #F8F6F2;
   }
 
   html {
@@ -20,25 +21,25 @@
   body {
     @apply bg-obsidian text-cream font-body;
     font-size: 16px;
-    line-height: 1.6;
+    line-height: 1.7;
   }
 
   ::selection {
-    background: rgba(201, 164, 85, 0.3);
-    color: #F0EAD6;
+    background: rgba(212, 175, 55, 0.3);
+    color: #F8F6F2;
   }
 
   ::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #0A0B0D;
+    background: #08111F;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #C9A455;
-    border-radius: 3px;
+    background: #D4AF37;
+    border-radius: 4px;
   }
 
   * {
@@ -48,24 +49,24 @@
 
 @layer components {
   .text-gold-gradient {
-    background: linear-gradient(135deg, #C9A455 0%, #E4C474 50%, #9E7B2F 100%);
+    background: linear-gradient(135deg, #D4AF37 0%, #E8C76A 50%, #B8972D 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .glass {
-    background: rgba(30, 34, 48, 0.6);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(201, 164, 85, 0.12);
+    background: rgba(16, 24, 38, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(212, 175, 55, 0.15);
   }
 
   .glass-dark {
-    background: rgba(10, 11, 13, 0.8);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(201, 164, 85, 0.08);
+    background: rgba(8, 17, 31, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(212, 175, 55, 0.1);
   }
 
   .card-hover {
@@ -73,28 +74,28 @@
   }
 
   .card-hover:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5), 0 0 30px rgba(201, 164, 85, 0.08);
+    transform: translateY(-8px);
+    box-shadow: 0 40px 90px rgba(0, 0, 0, 0.6), 0 0 40px rgba(212, 175, 55, 0.12);
   }
 
   .gold-border {
-    border: 1px solid rgba(201, 164, 85, 0.2);
+    border: 1px solid rgba(212, 175, 55, 0.25);
   }
 
   .gold-border-hover:hover {
-    border-color: rgba(201, 164, 85, 0.5);
+    border-color: rgba(212, 175, 55, 0.6);
   }
 
   .section-padding {
-    @apply py-24 md:py-32;
+    @apply py-32 md:py-40 lg:py-48;
   }
 
   .container-luxury {
-    @apply max-w-screen-xl mx-auto px-6 md:px-10 lg:px-16;
+    @apply max-w-screen-2xl mx-auto px-8 md:px-12 lg:px-20;
   }
 
   .overline-text {
-    @apply text-gold text-xs font-body font-semibold tracking-ultra uppercase;
+    @apply text-gold text-[10px] font-body font-semibold tracking-[0.3em] uppercase;
   }
 
   .heading-display {
@@ -105,7 +106,7 @@
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(201, 164, 85, 0.15) 50%,
+      rgba(212, 175, 55, 0.18) 50%,
       transparent 100%
     );
     background-size: 200% 100%;
@@ -123,35 +124,35 @@
 
   .divider-gold {
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(201, 164, 85, 0.4), transparent);
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
   }
 
   .input-luxury {
-    @apply w-full bg-surface rounded-sm px-4 py-3.5 text-cream placeholder-silver/50 font-body text-sm transition-all duration-300 outline-none;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    @apply w-full bg-charcoal rounded-sm px-5 py-4 text-cream placeholder-silver/50 font-body text-sm transition-all duration-300 outline-none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .input-luxury:focus {
-    @apply border-gold/40;
-    box-shadow: 0 0 0 3px rgba(201, 164, 85, 0.06);
+    @apply border-gold/50;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08);
   }
 
   .btn-gold {
-    @apply bg-gold text-obsidian font-body font-semibold text-sm tracking-wide uppercase px-8 py-4 transition-all duration-300 inline-flex items-center gap-2;
+    @apply bg-gold text-obsidian font-body font-semibold text-sm tracking-[0.15em] uppercase px-10 py-5 transition-all duration-300 inline-flex items-center gap-3;
   }
 
   .btn-gold:hover {
     @apply bg-gold-light;
-    transform: translateY(-1px);
-    box-shadow: 0 10px 30px rgba(201, 164, 85, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(212, 175, 55, 0.3);
   }
 
   .btn-outline {
-    @apply border border-gold/40 text-gold font-body font-medium text-sm tracking-wide uppercase px-8 py-4 transition-all duration-300 inline-flex items-center gap-2;
+    @apply border border-gold/50 text-gold font-body font-medium text-sm tracking-[0.15em] uppercase px-10 py-5 transition-all duration-300 inline-flex items-center gap-3;
   }
 
   .btn-outline:hover {
-    @apply border-gold bg-gold/10;
+    @apply border-gold bg-gold/15;
   }
 
   .property-card-image {
@@ -183,27 +184,27 @@
 }
 
 .swiper-pagination-bullet {
-  background: rgba(201, 164, 85, 0.4) !important;
+  background: rgba(212, 175, 55, 0.4) !important;
   opacity: 1 !important;
-  width: 6px !important;
-  height: 6px !important;
+  width: 8px !important;
+  height: 8px !important;
 }
 
 .swiper-pagination-bullet-active {
-  background: #C9A455 !important;
-  width: 24px !important;
-  border-radius: 3px !important;
+  background: #D4AF37 !important;
+  width: 32px !important;
+  border-radius: 4px !important;
 }
 
 .swiper-button-next,
 .swiper-button-prev {
-  color: #C9A455 !important;
-  width: 44px !important;
-  height: 44px !important;
-  background: rgba(10, 11, 13, 0.8) !important;
-  border: 1px solid rgba(201, 164, 85, 0.2) !important;
+  color: #D4AF37 !important;
+  width: 48px !important;
+  height: 48px !important;
+  background: rgba(8, 17, 31, 0.85) !important;
+  border: 1px solid rgba(212, 175, 55, 0.25) !important;
   border-radius: 0 !important;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
 }
 
 .swiper-button-next::after,

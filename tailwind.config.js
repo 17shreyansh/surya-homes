@@ -4,20 +4,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        obsidian: '#0A0B0D',
-        navy: '#0F1623',
-        charcoal: '#16191F',
-        surface: '#1E2230',
+        obsidian: '#08111F',
+        navy: '#08111F',
+        charcoal: '#101826',
+        surface: '#101826',
         gold: {
-          DEFAULT: '#C9A455',
-          light: '#E4C474',
-          dark: '#9E7B2F',
-          muted: '#8A6B2A',
+          DEFAULT: '#D4AF37',
+          light: '#E8C76A',
+          dark: '#B8972D',
+          muted: '#9A7B24',
         },
-        cream: '#F0EAD6',
-        ivory: '#FAF8F2',
-        silver: '#8E9BAA',
-        muted: '#4A5568',
+        cream: '#F8F6F2',
+        ivory: '#F8F6F2',
+        silver: '#A0A8B0',
+        muted: '#6B7280',
       },
       fontFamily: {
         display: ['"Cormorant Garamond"', 'serif'],
