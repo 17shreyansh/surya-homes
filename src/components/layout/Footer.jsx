@@ -1,57 +1,56 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { MapPin, Phone, Mail, Facebook, Instagram, Twitter, Youtube, Linkedin, ArrowRight } from 'lucide-react'
+import { MapPin, Phone, Mail, Clock, Facebook, Instagram, Twitter, Youtube, Linkedin, ArrowRight } from 'lucide-react'
 import { CONTACT, SOCIAL, SITE_NAME, FOOTER_LINKS } from '../../constants'
 import logoImage from '../../assets/Logo_1.png'
 
-// High-end easing curve
-const easeCustom = [0.16, 1, 0.3, 1]
+const cinematicEase = [0.25, 1, 0.5, 1]
 
-// Precise visual control
-const colors = {
-  navy: '#0A0F1C',
-  black: '#000000',
-  charcoal: '#1A1A1A',
-  gold: '#D4AF37',
-  white: '#FFFFFF',
+const theme = {
+  navy: '#082F67',
+  charcoal: '#101826',
+  gold: '#D89B00',
+  ivory: '#FAF8F3',
+  text: '#0B2340',
 }
 
 const styles = {
   footer: {
-    backgroundColor: colors.navy,
-    borderTop: `1px solid ${colors.white}10`,
+    backgroundColor: theme.navy,
     position: 'relative',
     overflow: 'hidden',
   },
   overline: {
-    color: colors.gold,
-    fontSize: '10px',
+    fontFamily: '"Inter", sans-serif',
+    color: theme.gold,
+    fontSize: '9px',
     textTransform: 'uppercase',
-    letterSpacing: '0.3em',
-    fontWeight: 500,
-    marginBottom: '24px',
+    letterSpacing: '0.25em',
+    fontWeight: 600,
+    marginBottom: '16px',
     display: 'block',
   },
   bodyText: {
-    color: `${colors.white}70`,
+    fontFamily: '"Inter", sans-serif',
+    color: `${theme.ivory}80`,
     fontSize: '13px',
-    lineHeight: '1.8',
+    lineHeight: '1.7',
     fontWeight: 300,
-    letterSpacing: '0.02em',
   },
   link: {
-    color: `${colors.white}70`,
-    fontSize: '12px',
-    fontWeight: 300,
-    letterSpacing: '0.05em',
+    fontFamily: '"Inter", sans-serif',
+    color: `${theme.ivory}70`,
+    fontSize: '11px',
+    fontWeight: 400,
+    letterSpacing: '0.02em',
     display: 'flex',
     alignItems: 'center',
-    gap: '12px',
-    transition: 'color 0.3s ease',
+    gap: '8px',
+    transition: 'color 0.4s ease',
   },
   bottomBar: {
-    borderTop: `1px solid ${colors.white}05`,
-    backgroundColor: colors.black,
+    borderTop: `1px solid ${theme.ivory}10`,
+    backgroundColor: theme.charcoal,
   }
 }
 
@@ -60,17 +59,17 @@ const SocialIcon = ({ Icon, href }) => (
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    whileHover={{ y: -3, borderColor: `${colors.gold}80`, color: colors.gold }}
-    transition={{ duration: 0.3, ease: easeCustom }}
+    whileHover={{ y: -2, backgroundColor: `${theme.gold}15` }}
+    transition={{ duration: 0.4, ease: cinematicEase }}
     style={{
-      width: '40px',
-      height: '40px',
-      border: `1px solid ${colors.white}15`,
+      width: '36px',
+      height: '36px',
+      border: `1px solid ${theme.ivory}20`,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      color: `${colors.white}60`,
-      willChange: 'transform, border-color, color'
+      color: theme.ivory,
+      willChange: 'transform, background-color'
     }}
   >
     <Icon size={14} strokeWidth={1.5} />
@@ -83,14 +82,9 @@ const LinkItem = ({ link }) => (
       to={link.path}
       className="group"
       style={styles.link}
-      onMouseEnter={(e) => e.currentTarget.style.color = colors.white}
-      onMouseLeave={(e) => e.currentTarget.style.color = `${colors.white}70`}
+      onMouseEnter={(e) => e.currentTarget.style.color = theme.ivory}
+      onMouseLeave={(e) => e.currentTarget.style.color = `${theme.ivory}70`}
     >
-      <ArrowRight 
-        size={12} 
-        style={{ color: `${colors.gold}50`, willChange: 'transform', transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s ease' }} 
-        className="group-hover:translate-x-1 group-hover:text-[#D4AF37]" 
-      />
       {link.label}
     </Link>
   </li>
@@ -101,16 +95,16 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+    transition: { staggerChildren: 0.08, delayChildren: 0.15 }
   }
 }
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 15 },
   visible: { 
     opacity: 1, 
     y: 0, 
-    transition: { duration: 0.8, ease: easeCustom } 
+    transition: { duration: 1, ease: cinematicEase } 
   }
 }
 
@@ -119,21 +113,7 @@ export default function Footer() {
 
   return (
     <footer style={styles.footer}>
-      {/* Subtle background glow */}
-      <div 
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '60%',
-          height: '1px',
-          background: `radial-gradient(circle, ${colors.gold}40 0%, transparent 100%)`,
-          opacity: 0.5
-        }}
-      />
-
-      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 py-24">
+      <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-20 py-24 lg:py-32">
         <motion.div 
           variants={containerVariants}
           initial="hidden"
@@ -142,21 +122,20 @@ export default function Footer() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8"
         >
           {/* Brand Column */}
-          <motion.div variants={itemVariants} className="lg:col-span-4 lg:pr-12">
-            <Link to="/" className="inline-block mb-8" style={{ willChange: 'transform' }}>
+          <motion.div variants={itemVariants} className="lg:col-span-5">
+            <Link to="/" className="inline-block mb-6">
               <motion.img 
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.4, ease: easeCustom }}
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.5, ease: cinematicEase }}
                 src={logoImage} 
                 alt={SITE_NAME} 
-                style={{ height: '48px', width: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 0 8px rgba(212, 175, 55, 0.15))' }}
+                style={{ height: '44px', width: 'auto', objectFit: 'contain' }}
               />
             </Link>
-            <span style={styles.overline}>Architectural Excellence</span>
-            <p style={{ ...styles.bodyText, marginBottom: '32px' }}>
-              Curating and developing Greater Noida's most uncompromising residential and commercial spaces since 2010. Engineered for those who demand precision.
+            <p style={{ ...styles.bodyText, marginBottom: '24px', maxWidth: '380px' }}>
+              Curating Greater Noida's finest residential and commercial properties since 2010. Quality homes for families who value trust and transparency.
             </p>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5 mb-8">
               <SocialIcon Icon={Facebook} href={SOCIAL.facebook} />
               <SocialIcon Icon={Instagram} href={SOCIAL.instagram} />
               <SocialIcon Icon={Twitter} href={SOCIAL.twitter} />
@@ -165,13 +144,10 @@ export default function Footer() {
             </div>
           </motion.div>
 
-          {/* Spacer for structural balance */}
-          <div className="hidden lg:block lg:col-span-1" />
-
           {/* Quick Links */}
           <motion.div variants={itemVariants} className="lg:col-span-2">
-            <h4 style={styles.overline}>Portfolio</h4>
-            <ul className="flex flex-col gap-4">
+            <h4 style={styles.overline}>Quick Links</h4>
+            <ul className="flex flex-col gap-3">
               {FOOTER_LINKS.quickLinks.map((link) => (
                 <LinkItem key={link.path} link={link} />
               ))}
@@ -180,8 +156,8 @@ export default function Footer() {
 
           {/* Company Links */}
           <motion.div variants={itemVariants} className="lg:col-span-2">
-            <h4 style={styles.overline}>Enterprise</h4>
-            <ul className="flex flex-col gap-4">
+            <h4 style={styles.overline}>Company</h4>
+            <ul className="flex flex-col gap-3">
               {FOOTER_LINKS.company.map((link) => (
                 <LinkItem key={link.path} link={link} />
               ))}
@@ -190,43 +166,43 @@ export default function Footer() {
 
           {/* Contact Data */}
           <motion.div variants={itemVariants} className="lg:col-span-3">
-            <h4 style={styles.overline}>Headquarters</h4>
-            <ul className="flex flex-col gap-5 mb-8">
-              <li className="flex items-start gap-4">
-                <MapPin size={14} style={{ color: colors.gold, marginTop: '4px', flexShrink: 0 }} />
+            <h4 style={styles.overline}>Contact Us</h4>
+            <ul className="flex flex-col gap-4">
+              <li className="flex items-start gap-3">
+                <MapPin size={13} style={{ color: theme.gold, marginTop: '3px', flexShrink: 0 }} />
                 <span style={styles.bodyText}>{CONTACT.address}</span>
               </li>
               <li>
                 <a 
                   href={`tel:${CONTACT.phone}`} 
-                  className="flex items-center gap-4 group"
-                  style={{ ...styles.bodyText, transition: 'color 0.3s ease' }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = colors.gold}
-                  onMouseLeave={(e) => e.currentTarget.style.color = `${colors.white}70`}
+                  className="flex items-center gap-3"
+                  style={{ ...styles.bodyText, transition: 'color 0.4s ease' }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = theme.gold}
+                  onMouseLeave={(e) => e.currentTarget.style.color = `${theme.ivory}80`}
                 >
-                  <Phone size={14} style={{ color: colors.gold, flexShrink: 0 }} />
+                  <Phone size={13} style={{ color: theme.gold, flexShrink: 0 }} />
                   {CONTACT.phone}
                 </a>
               </li>
               <li>
                 <a 
                   href={`mailto:${CONTACT.email}`} 
-                  className="flex items-center gap-4 group"
-                  style={{ ...styles.bodyText, transition: 'color 0.3s ease' }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = colors.gold}
-                  onMouseLeave={(e) => e.currentTarget.style.color = `${colors.white}70`}
+                  className="flex items-center gap-3"
+                  style={{ ...styles.bodyText, transition: 'color 0.4s ease' }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = theme.gold}
+                  onMouseLeave={(e) => e.currentTarget.style.color = `${theme.ivory}80`}
                 >
-                  <Mail size={14} style={{ color: colors.gold, flexShrink: 0 }} />
+                  <Mail size={13} style={{ color: theme.gold, flexShrink: 0 }} />
                   {CONTACT.email}
                 </a>
               </li>
             </ul>
-
-            {/* Replaced bulky box with a sleek architectural line-separator for hours */}
-            <div style={{ borderLeft: `1px solid ${colors.gold}40`, paddingLeft: '16px' }}>
-              <span style={{ ...styles.overline, marginBottom: '8px', fontSize: '9px', color: `${colors.white}50` }}>
-                Operating Hours
-              </span>
+            
+            <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: `1px solid ${theme.ivory}15` }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <Clock size={13} style={{ color: theme.gold }} />
+                <span style={{ ...styles.overline, marginBottom: 0, fontSize: '8px' }}>Hours</span>
+              </div>
               <p style={{ ...styles.bodyText, fontSize: '12px' }}>
                 {CONTACT.hours.weekdays}<br />
                 {CONTACT.hours.sunday}
@@ -238,26 +214,29 @@ export default function Footer() {
 
       {/* Bottom Bar */}
       <div style={styles.bottomBar}>
-        <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p style={{ color: `${colors.white}40`, fontSize: '11px', fontWeight: 300, letterSpacing: '0.05em' }}>
-            © {year} {SITE_NAME}. ALL RIGHTS RESERVED.
+        <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-20 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p style={{ fontFamily: '"Inter", sans-serif', color: `${theme.ivory}50`, fontSize: '10px', fontWeight: 400, letterSpacing: '0.05em', textAlign: 'center' }}>
+            © {year} {SITE_NAME}. All rights reserved.
           </p>
-          <a 
-            href="https://www.digitaladhyay.in/" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            style={{ 
-              color: `${colors.white}40`, 
-              fontSize: '11px', 
-              fontWeight: 300,
-              letterSpacing: '0.05em',
-              transition: 'color 0.3s ease'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.color = colors.gold}
-            onMouseLeave={(e) => e.currentTarget.style.color = `${colors.white}40`}
-          >
-            Developed by Digital Adhyay
-          </a>
+          <div className="flex items-center gap-6 text-center">
+            <Link to="/privacy-policy" style={{ fontFamily: '"Inter", sans-serif', color: `${theme.ivory}50`, fontSize: '10px', transition: 'color 0.3s ease' }} onMouseEnter={(e) => e.currentTarget.style.color = theme.gold} onMouseLeave={(e) => e.currentTarget.style.color = `${theme.ivory}50`}>Privacy</Link>
+            <Link to="/terms" style={{ fontFamily: '"Inter", sans-serif', color: `${theme.ivory}50`, fontSize: '10px', transition: 'color 0.3s ease' }} onMouseEnter={(e) => e.currentTarget.style.color = theme.gold} onMouseLeave={(e) => e.currentTarget.style.color = `${theme.ivory}50`}>Terms</Link>
+            <a 
+              href="https://www.digitaladhyay.in/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ 
+                fontFamily: '"Inter", sans-serif',
+                color: `${theme.ivory}50`, 
+                fontSize: '10px', 
+                transition: 'color 0.3s ease'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = theme.gold}
+              onMouseLeave={(e) => e.currentTarget.style.color = `${theme.ivory}50`}
+            >
+              Digital Adhyay
+            </a>
+          </div>
         </div>
       </div>
     </footer>

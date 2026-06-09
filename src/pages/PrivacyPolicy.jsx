@@ -1,5 +1,15 @@
 import Layout from '../components/layout/Layout'
-import { ScrollReveal } from '../components/ui'
+import { motion } from 'framer-motion'
+
+const cinematicEase = [0.25, 1, 0.5, 1]
+
+const theme = {
+  navy: '#082F67',
+  charcoal: '#101826',
+  gold: '#D89B00',
+  ivory: '#FAF8F3',
+  beige: '#F5F1E8',
+}
 
 const sections = [
   {
@@ -43,38 +53,50 @@ const sections = [
 export default function PrivacyPolicy() {
   return (
     <Layout>
-      <div className="bg-obsidian">
+      <div style={{ backgroundColor: theme.ivory }}>
         {/* Header */}
-        <div className="bg-charcoal py-20 border-b border-white/5">
-          <div className="container-luxury max-w-3xl">
-            <ScrollReveal>
-              <span className="overline-text mb-4 block">Legal</span>
-              <h1 className="font-display text-4xl md:text-5xl text-cream font-light mb-4">Privacy Policy</h1>
-              <p className="text-silver/50 font-body text-sm">
+        <div style={{ backgroundColor: theme.beige, padding: '140px 0 80px 0', borderBottom: `1px solid ${theme.navy}08` }}>
+          <div className="w-full max-w-[800px] mx-auto px-6 sm:px-12">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease: cinematicEase }}
+            >
+              <span style={{ fontFamily: '"Inter", sans-serif', color: theme.gold, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.3em', fontWeight: 600, marginBottom: '16px', display: 'block' }}>Legal</span>
+              <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '3.5rem', color: theme.navy, fontWeight: 400, marginBottom: '16px', lineHeight: 1.1 }}>Privacy Policy</h1>
+              <p style={{ fontFamily: '"Inter", sans-serif', color: `${theme.navy}50`, fontSize: '12px', fontWeight: 300 }}>
                 Effective Date: 1 January 2025 · Last Updated: 1 June 2026
               </p>
-            </ScrollReveal>
+            </motion.div>
           </div>
         </div>
 
         {/* Content */}
-        <div className="container-luxury max-w-3xl py-16">
-          <ScrollReveal>
-            <p className="text-silver/70 font-body text-sm leading-relaxed mb-10 p-6 bg-charcoal border border-gold/10 border-l-2 border-l-gold/50">
+        <div className="w-full max-w-[800px] mx-auto px-6 sm:px-12 py-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.2, ease: cinematicEase }}
+          >
+            <p style={{ fontFamily: '"Inter", sans-serif', color: `${theme.navy}80`, fontSize: '14px', lineHeight: 1.7, marginBottom: '40px', padding: '24px', backgroundColor: theme.beige, border: `1px solid ${theme.gold}20`, borderLeftWidth: '2px', borderLeftColor: theme.gold, fontWeight: 300 }}>
               At Surya Homes, we are committed to protecting your privacy. This Privacy Policy explains how we collect,
               use, and safeguard your personal information when you visit our website or engage with our services.
             </p>
-          </ScrollReveal>
+          </motion.div>
 
-          <div className="space-y-10">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
             {sections.map((section, i) => (
-              <ScrollReveal key={i} delay={i * 0.04}>
-                <div>
-                  <h2 className="font-display text-xl text-cream font-light mb-3">{section.title}</h2>
-                  <div className="divider-gold mb-4" />
-                  <p className="text-silver/60 font-body text-sm leading-relaxed">{section.content}</p>
-                </div>
-              </ScrollReveal>
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.8, delay: i * 0.04, ease: cinematicEase }}
+              >
+                <h2 style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.5rem', color: theme.navy, fontWeight: 400, marginBottom: '12px' }}>{section.title}</h2>
+                <div style={{ width: '40px', height: '1px', backgroundColor: theme.gold, marginBottom: '16px' }} />
+                <p style={{ fontFamily: '"Inter", sans-serif', color: `${theme.navy}70`, fontSize: '14px', lineHeight: 1.7, fontWeight: 300 }}>{section.content}</p>
+              </motion.div>
             ))}
           </div>
         </div>

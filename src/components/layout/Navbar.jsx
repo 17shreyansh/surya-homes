@@ -53,7 +53,7 @@ const MagneticButton = ({ children, onClick, scrolled }) => {
       <div 
         className="absolute inset-0 border border-solid transition-colors duration-500 ease-out z-0"
         style={{ 
-          borderColor: scrolled ? theme.navy : theme.ivory,
+          borderColor: theme.navy,
           opacity: 0.4 
         }} 
       />
@@ -70,7 +70,7 @@ const MagneticButton = ({ children, onClick, scrolled }) => {
       
       <span 
         className="relative z-10 px-8 py-4 text-[10px] uppercase tracking-[0.2em] transition-colors duration-500"
-        style={{ color: scrolled ? theme.navy : theme.ivory, fontFamily: '"Inter", sans-serif' }}
+        style={{ color: theme.navy, fontFamily: '"Inter", sans-serif' }}
       >
         {children}
       </span>
@@ -89,20 +89,17 @@ export default function Navbar() {
     setMobileOpen(false);
   }, [location.pathname]);
 
-  const textColor = scrolled ? theme.text : theme.ivory;
+  const isHome = location.pathname === '/';
+  const isTransparent = isHome && !scrolled;
+  const textColor = isTransparent ? theme.ivory : theme.text;
 
   return (
     <>
-      <motion.header
-        initial={{ y: '-100%' }}
-        animate={{ y: 0 }}
-        transition={{ duration: 1.4, ease: luxEase }}
+      <header
         style={{ 
-          backgroundColor: scrolled ? theme.ivory : 'transparent',
-          borderBottom: scrolled ? `1px solid ${theme.navy}15` : '1px solid transparent',
-          transition: 'background-color 0.8s ease, border-color 0.8s ease',
-          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
-          willChange: 'transform, background-color'
+          backgroundColor: isTransparent ? 'transparent' : theme.ivory,
+          borderBottom: isTransparent ? '1px solid transparent' : `1px solid ${theme.navy}15`,
+          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50
         }}
       >
         <div className="w-full max-w-[1800px] mx-auto px-6 sm:px-12 lg:px-20 flex items-center justify-between h-28 sm:h-32 lg:h-28">
@@ -113,8 +110,7 @@ export default function Navbar() {
               alt={SITE_NAME} 
               className="h-full w-auto object-contain origin-left"
               style={{ 
-                filter: scrolled ? 'none' : 'brightness(0) invert(1) drop-shadow(0 4px 12px rgba(0,0,0,0.2))',
-                transition: 'filter 0.8s ease',
+                filter: isTransparent ? 'brightness(0) invert(1) drop-shadow(0 4px 12px rgba(0,0,0,0.2))' : 'none',
                 maxHeight: '100%'
               }}
             />
@@ -135,7 +131,6 @@ export default function Navbar() {
                     textTransform: 'uppercase',
                     letterSpacing: '0.24em',
                     color: textColor,
-                    transition: 'color 0.5s ease',
                     opacity: active ? 1 : 0.7,
                   }}
                 >
@@ -171,8 +166,7 @@ export default function Navbar() {
                 color: textColor,
                 fontSize: '14px',
                 letterSpacing: '0.05em',
-                fontStyle: 'italic',
-                transition: 'color 0.4s ease'
+                fontStyle: 'italic'
               }}
               className="hover:text-[#D89B00]"
             >
@@ -198,7 +192,7 @@ export default function Navbar() {
             </motion.div>
           </button>
         </div>
-      </motion.header>
+      </header>
 
       {/* Mobile Architectural Reveal */}
       <AnimatePresence>
