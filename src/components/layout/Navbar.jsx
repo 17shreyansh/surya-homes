@@ -1,268 +1,278 @@
-import { useState, useEffect } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, ArrowRight } from 'lucide-react'
-import { NAV_LINKS, CONTACT, SITE_NAME } from '../../constants'
-import { useScrollPosition, useBodyLock } from '../../hooks'
-import logoImage from '../../assets/Logo_1.png'
+import { useState, useEffect, useRef } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { Menu, X } from 'lucide-react';
+import { NAV_LINKS, CONTACT, SITE_NAME } from '../../constants';
+import { useScrollPosition, useBodyLock } from '../../hooks';
+import logoImage from '../../assets/Logo_1.png';
 
-// High-end easing curve for Apple/Stripe-tier fluidity
-const easeCustom = [0.16, 1, 0.3, 1]
+// Strict Luxury Palette
+const theme = {
+  navy: '#082F67',
+  gold: '#D89B00',
+  ivory: '#FAF8F3',
+  text: '#0B2340',
+  beige: '#F5F1E8'
+};
 
-// Precise visual control objects
-const colors = {
-  navy: '#08111F',
-  black: '#000000',
-  charcoal: '#101826',
-  gold: '#D4AF37',
-  white: '#F8F6F2',
-}
+// Premium Easing
+const luxEase = [0.19, 1.0, 0.22, 1.0];
 
-const styles = {
-  header: (scrolled) => ({
-    backgroundColor: scrolled ? 'rgba(8, 17, 31, 0.9)' : 'transparent',
-    backdropFilter: scrolled ? 'blur(28px)' : 'none',
-    WebkitBackdropFilter: scrolled ? 'blur(28px)' : 'none',
-    borderBottom: scrolled ? `1px solid ${colors.gold}25` : '1px solid transparent',
-    transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
-  }),
-  navLink: {
-    fontSize: '11px',
-    textTransform: 'uppercase',
-    letterSpacing: '0.22em',
-    fontWeight: 500,
-    position: 'relative',
-    padding: '10px 0',
-  },
-  btnPrimary: {
-    border: `1px solid ${colors.gold}`,
-    color: colors.gold,
-    fontSize: '10px',
-    textTransform: 'uppercase',
-    letterSpacing: '0.18em',
-    padding: '12px 28px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    transition: 'all 0.5s ease',
-  }
-}
+const MagneticButton = ({ children, onClick, scrolled }) => {
+  const ref = useRef(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  
+  const springConfig = { damping: 15, stiffness: 150, mass: 0.1 };
+  const springX = useSpring(x, springConfig);
+  const springY = useSpring(y, springConfig);
 
-const Logo = () => (
-  <Link to="/" style={{ display: 'block', height: '100%', display: 'flex', alignItems: 'center' }}>
-    <img 
-      src={logoImage} 
-      alt={SITE_NAME} 
-      style={{ 
-        height: '70%',
-        width: 'auto',
-        objectFit: 'contain',
-        transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-        filter: 'drop-shadow(0 0 8px rgba(212, 175, 55, 0.15))'
-      }}
-      onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-    />
-  </Link>
-)
+  const handleMouseMove = (e) => {
+    const { clientX, clientY } = e;
+    const { height, width, left, top } = ref.current.getBoundingClientRect();
+    const middleX = clientX - (left + width / 2);
+    const middleY = clientY - (top + height / 2);
+    x.set(middleX * 0.2); // Subtle magnetic pull
+    y.set(middleY * 0.2);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.button
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onClick={onClick}
+      style={{ x: springX, y: springY }}
+      className="relative overflow-hidden group flex items-center justify-center cursor-pointer"
+    >
+      <div 
+        className="absolute inset-0 border border-solid transition-colors duration-500 ease-out z-0"
+        style={{ 
+          borderColor: scrolled ? theme.navy : theme.ivory,
+          opacity: 0.4 
+        }} 
+      />
+      
+      {/* Hover Fill */}
+      <div 
+        className="absolute inset-0 origin-bottom transform scale-y-0 transition-transform duration-700 z-0 group-hover:scale-y-100"
+        style={{ 
+          backgroundColor: theme.gold, 
+          willChange: 'transform',
+          transitionTimingFunction: 'cubic-bezier(0.19, 1, 0.22, 1)'
+        }}
+      />
+      
+      <span 
+        className="relative z-10 px-8 py-4 text-[10px] uppercase tracking-[0.2em] transition-colors duration-500"
+        style={{ color: scrolled ? theme.navy : theme.ivory, fontFamily: '"Inter", sans-serif' }}
+      >
+        {children}
+      </span>
+    </motion.button>
+  );
+};
 
 export default function Navbar() {
-  const { scrolled } = useScrollPosition()
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const location = useLocation()
-  const navigate = useNavigate()
-
-  useBodyLock(mobileOpen)
+  const { scrolled } = useScrollPosition();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+  
+  useBodyLock(mobileOpen);
 
   useEffect(() => {
-    setMobileOpen(false)
-  }, [location.pathname])
+    setMobileOpen(false);
+  }, [location.pathname]);
 
-  const isActive = (path) => {
-    if (path === '/') return location.pathname === '/'
-    return location.pathname.startsWith(path)
-  }
+  const textColor = scrolled ? theme.text : theme.ivory;
 
   return (
     <>
       <motion.header
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: easeCustom }}
+        initial={{ y: '-100%' }}
+        animate={{ y: 0 }}
+        transition={{ duration: 1.4, ease: luxEase }}
         style={{ 
-          ...styles.header(scrolled),
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 50,
-          willChange: 'transform, opacity, background-color'
+          backgroundColor: scrolled ? theme.ivory : 'transparent',
+          borderBottom: scrolled ? `1px solid ${theme.navy}15` : '1px solid transparent',
+          transition: 'background-color 0.8s ease, border-color 0.8s ease',
+          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
+          willChange: 'transform, background-color'
         }}
       >
-        <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-8 md:px-12 lg:px-20 flex items-center justify-between h-20 sm:h-24">
-          <Logo />
+        <div className="w-full max-w-[1800px] mx-auto px-6 sm:px-12 lg:px-20 flex items-center justify-between h-28 sm:h-32 lg:h-28">
+          
+          <Link to="/" className="relative z-50 flex items-center h-full">
+            <img 
+              src={logoImage} 
+              alt={SITE_NAME} 
+              className="h-full w-auto object-contain origin-left"
+              style={{ 
+                filter: scrolled ? 'none' : 'brightness(0) invert(1) drop-shadow(0 4px 12px rgba(0,0,0,0.2))',
+                transition: 'filter 0.8s ease',
+                maxHeight: '100%'
+              }}
+            />
+          </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-10">
+          {/* Editorial Desktop Nav */}
+          <nav className="hidden lg:flex items-center gap-14">
             {NAV_LINKS.map((link) => {
-              const active = isActive(link.path)
+              const active = location.pathname === link.path;
               return (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className="group"
+                  className="group relative py-2 overflow-hidden"
                   style={{
-                    ...styles.navLink,
-                    color: active ? colors.gold : `${colors.white}80`,
+                    fontFamily: '"Inter", sans-serif',
+                    fontSize: '11px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.24em',
+                    color: textColor,
+                    transition: 'color 0.5s ease',
+                    opacity: active ? 1 : 0.7,
                   }}
-                  onMouseEnter={(e) => !active && (e.currentTarget.style.color = colors.white)}
-                  onMouseLeave={(e) => !active && (e.currentTarget.style.color = `${colors.white}80`)}
                 >
-                  {link.label}
+                  <motion.span 
+                    className="block relative z-10 transition-transform duration-500 group-hover:-translate-y-full"
+                    style={{ willChange: 'transform' }}
+                  >
+                    {link.label}
+                  </motion.span>
+                  <motion.span 
+                    className="absolute inset-0 z-10 transition-transform duration-500 translate-y-full group-hover:translate-y-0 flex items-center"
+                    style={{ color: theme.gold, willChange: 'transform' }}
+                  >
+                    {link.label}
+                  </motion.span>
                   
-                  {/* Stripe-level animated active indicator */}
                   {active && (
-                    <motion.div
-                      layoutId="activeNavIndicator"
-                      style={{
-                        position: 'absolute',
-                        bottom: -4,
-                        left: 0,
-                        right: 0,
-                        height: '1px',
-                        backgroundColor: colors.gold,
-                        willChange: 'transform'
-                      }}
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    />
-                  )}
-
-                  {/* Hardware-accelerated hover underline (no width thrashing) */}
-                  {!active && (
-                    <span 
-                      className="absolute -bottom-1 left-0 right-0 h-[1px] origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100"
-                      style={{ backgroundColor: `${colors.white}40`, willChange: 'transform' }}
+                    <div 
+                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
+                      style={{ backgroundColor: theme.gold }}
                     />
                   )}
                 </Link>
-              )
+              );
             })}
           </nav>
 
-          {/* CTA */}
-          <div className="hidden lg:flex items-center gap-4 xl:gap-8">
+          <div className="hidden lg:flex items-center gap-12">
             <a
               href={`tel:${CONTACT.phone}`}
               style={{
-                ...styles.navLink,
-                color: `${colors.white}60`,
-                letterSpacing: '0.1em'
+                fontFamily: '"Playfair Display", serif',
+                color: textColor,
+                fontSize: '14px',
+                letterSpacing: '0.05em',
+                fontStyle: 'italic',
+                transition: 'color 0.4s ease'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.color = colors.gold}
-              onMouseLeave={(e) => e.currentTarget.style.color = `${colors.white}60`}
+              className="hover:text-[#D89B00]"
             >
               {CONTACT.phone}
             </a>
             
-            <Link
-              to="/contact"
-              className="group hover:bg-[#D4AF37] hover:text-black"
-              style={styles.btnPrimary}
-            >
-              <span>Enquire</span>
-              <ArrowRight 
-                size={14} 
-                className="transition-transform duration-300 group-hover:translate-x-1" 
-                style={{ willChange: 'transform' }}
-              />
-            </Link>
+            <MagneticButton scrolled={scrolled} onClick={() => window.location.href='/contact'}>
+              Private Advisory
+            </MagneticButton>
           </div>
 
           {/* Mobile Toggle */}
           <button
-            className="lg:hidden p-2 transition-colors duration-300"
-            style={{ color: mobileOpen ? colors.gold : colors.white }}
+            className="lg:hidden z-50 relative p-2"
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
+            aria-label="Menu"
           >
-            {mobileOpen ? <X size={24} strokeWidth={1.5} /> : <Menu size={24} strokeWidth={1.5} />}
+            <motion.div animate={{ rotate: mobileOpen ? 180 : 0 }} transition={{ duration: 0.8, ease: luxEase }}>
+              {mobileOpen ? 
+                <X size={32} strokeWidth={1} color={theme.navy} /> : 
+                <Menu size={32} strokeWidth={1} color={textColor} />
+              }
+            </motion.div>
           </button>
         </div>
       </motion.header>
 
-      {/* Mobile Menu */}
+      {/* Mobile Architectural Reveal */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: '-100%' }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: '-100%' }}
-            transition={{ duration: 0.6, ease: easeCustom }}
+            initial={{ clipPath: 'inset(0 0 100% 0)' }}
+            animate={{ clipPath: 'inset(0 0 0% 0)' }}
+            exit={{ clipPath: 'inset(0 0 100% 0)' }}
+            transition={{ duration: 1.2, ease: luxEase }}
             style={{
-              position: 'fixed',
-              inset: 0,
-              zIndex: 40,
-              backgroundColor: colors.navy,
-              display: 'flex',
-              flexDirection: 'column',
-              willChange: 'transform, opacity'
+              position: 'fixed', inset: 0, zIndex: 40,
+              backgroundColor: theme.ivory, // Solid, warm, readable
+              display: 'flex', flexDirection: 'column',
+              willChange: 'clip-path'
             }}
           >
-            <div className="flex-1 px-6 sm:px-8 pt-28 sm:pt-32 pb-8 sm:pb-12 flex flex-col justify-between overflow-y-auto">
-              <nav className="flex flex-col gap-4 sm:gap-6">
+            <div className="flex-1 px-8 pt-40 pb-16 flex flex-col justify-between h-full">
+              
+              <nav className="flex flex-col gap-8">
                 {NAV_LINKS.map((link, i) => {
-                  const active = isActive(link.path)
+                  const active = location.pathname === link.path;
                   return (
-                    <motion.div
-                      key={link.path}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1 + (i * 0.05), duration: 0.5, ease: easeCustom }}
-                      style={{ willChange: 'transform, opacity' }}
-                    >
-                      <Link
-                        to={link.path}
-                        className="text-3xl sm:text-4xl md:text-5xl"
-                        style={{
-                          display: 'block',
-                          fontWeight: 300,
-                          letterSpacing: '-0.02em',
-                          color: active ? colors.gold : colors.white,
-                          transition: 'color 0.3s ease'
-                        }}
+                    <div key={link.path} className="overflow-hidden">
+                      <motion.div
+                        initial={{ y: '120%', rotate: 2 }}
+                        animate={{ y: 0, rotate: 0 }}
+                        exit={{ y: '120%', opacity: 0 }}
+                        transition={{ delay: 0.3 + (i * 0.1), duration: 1, ease: luxEase }}
+                        style={{ willChange: 'transform' }}
                       >
-                        {link.label}
-                      </Link>
-                    </motion.div>
-                  )
+                        <Link
+                          to={link.path}
+                          style={{
+                            fontFamily: '"Playfair Display", serif',
+                            display: 'block',
+                            fontSize: '3.5rem',
+                            lineHeight: '1.1',
+                            color: active ? theme.gold : theme.navy,
+                          }}
+                        >
+                          {link.label}
+                        </Link>
+                      </motion.div>
+                    </div>
+                  );
                 })}
               </nav>
 
               <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-                className="flex flex-col gap-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8, duration: 1, ease: luxEase }}
               >
-                <div style={{ height: '1px', backgroundColor: `${colors.gold}20`, width: '100%' }} />
-                
-                <Link
-                  to="/contact"
-                  className="text-center py-3"
+                <div style={{ height: '1px', backgroundColor: `${theme.navy}20`, width: '100%', marginBottom: '32px' }} />
+                <a
+                  href={`tel:${CONTACT.phone}`}
                   style={{
-                    ...styles.btnPrimary,
-                    justifyContent: 'center',
-                    backgroundColor: colors.gold,
-                    color: colors.black,
+                    fontFamily: '"Playfair Display", serif',
+                    display: 'block',
+                    color: theme.navy,
+                    fontSize: '1.5rem',
+                    marginBottom: '16px'
                   }}
                 >
-                  Start a Conversation
-                </Link>
+                  {CONTACT.phone}
+                </a>
+                <p style={{ fontFamily: '"Inter", sans-serif', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.2em', color: `${theme.navy}70` }}>
+                  Schedule a private viewing
+                </p>
               </motion.div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </>
-  )
+  );
 }
