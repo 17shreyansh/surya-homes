@@ -68,7 +68,6 @@ export const FOOTER_LINKS = {
   quickLinks: [
     { label: 'Browse Properties', path: '/properties' },
     { label: 'Land & Plots', path: '/properties?type=Plot' },
-    { label: 'List Your Property', path: '/contact' },
     { label: 'Blog & Insights', path: '/blog' },
     { label: 'Contact Us', path: '/contact' },
   ],

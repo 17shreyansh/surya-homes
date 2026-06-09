@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, X, SlidersHorizontal } from 'lucide-react'
 import Layout from '../components/layout/Layout'
-import PropertyCard from '../components/property/PropertyCard'
+import { PropertyCard } from '../components/property/PropertyCard'
 import { properties } from '../data/properties'
 import { LOCATIONS, PROPERTY_TYPES, BUDGET_RANGES } from '../constants'
 

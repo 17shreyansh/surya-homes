@@ -1,208 +1,215 @@
-import { motion } from 'framer-motion'
-import { Shield, TrendingUp, Users, Award, Clock, FileCheck } from 'lucide-react'
-import { STATS } from '../../constants'
+import { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { STATS } from '../../constants';
 
-const easeCustom = [0.16, 1, 0.3, 1]
+// High-end cinematic easing curve
+const cinematicEase = [0.25, 1, 0.5, 1];
 
-const colors = {
-  navy: '#08111F',
-  charcoal: '#101826',
-  black: '#000000',
-  gold: '#D4AF37',
-  white: '#F8F6F2',
-}
+// Strict Surya Homes Palette
+const theme = {
+  navy: '#082F67',
+  gold: '#D89B00',
+  ivory: '#FAF8F3',
+  beige: '#F5F1E8',
+  text: '#0B2340',
+};
 
-const styles = {
-  sectionBlack: {
-    backgroundColor: colors.black,
-    padding: '160px 0',
-    position: 'relative',
-    overflow: 'hidden',
+// Elevated Copywriting
+const pillars = [
+  {
+    id: '01',
+    title: 'Uncompromising Curation',
+    description: 'Every estate undergoes exhaustive vetting. We accept only properties that meet our absolute standards for architectural pedigree and location.',
   },
-  sectionNavy: {
-    backgroundColor: colors.navy,
-    padding: '100px 0',
-    borderTop: `1px solid ${colors.white}0D`,
-    borderBottom: `1px solid ${colors.white}0D`,
-    position: 'relative',
+  {
+    id: '02',
+    title: 'Private Advisory',
+    description: 'You are assigned a dedicated director. We provide absolute discretion and tailored counsel throughout your entire acquisition journey.',
   },
-  overline: {
-    color: colors.gold,
-    fontSize: '10px',
-    textTransform: 'uppercase',
-    letterSpacing: '0.35em',
-    fontWeight: 500,
-    display: 'block',
-    marginBottom: '24px'
+  {
+    id: '03',
+    title: 'Ironclad Provenance',
+    description: 'Our legal architecture is flawless. We conduct deep-tier due diligence to guarantee clear titles and absolute peace of mind.',
   },
-  heading: {
-    color: colors.white,
-    fontSize: '3.5rem',
-    fontWeight: 300,
-    letterSpacing: '-0.02em',
-    lineHeight: 1.2,
-    marginBottom: '24px'
+  {
+    id: '04',
+    title: 'Yield & Legacy',
+    description: 'We do not just sell homes; we secure assets. Our portfolio is optimized for generational wealth preservation and capital appreciation.',
   },
-  paragraph: {
-    color: `${colors.white}65`,
-    fontSize: '15px',
-    lineHeight: 1.7,
-    fontWeight: 300,
-    maxWidth: '600px',
-    margin: '0 auto'
-  },
-  card: {
-    backgroundColor: colors.charcoal,
-    border: `1px solid ${colors.white}08`,
-    padding: '48px 40px',
-    height: '100%',
-    transition: 'all 0.6s ease',
-  },
-  iconBox: {
-    width: '52px',
-    height: '52px',
-    border: `1px solid ${colors.gold}45`,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: '36px',
-    transition: 'all 0.6s ease',
-  }
-}
+];
 
-const reasons = [
-  {
-    icon: Shield,
-    title: 'Verified Properties',
-    description: 'Every property undergoes rigorous verification. We ensure complete legal compliance and authenticity.',
-  },
-  {
-    icon: TrendingUp,
-    title: 'Investment Excellence',
-    description: 'Our portfolio features high-appreciation assets with transparent pricing and zero hidden charges.',
-  },
-  {
-    icon: Users,
-    title: 'Expert Consultation',
-    description: 'Our team of specialists provides personalized guidance throughout your property journey.',
-  },
-  {
-    icon: Award,
-    title: '15 Years of Trust',
-    description: 'Established in 2010, we have built a legacy of excellence and client satisfaction.',
-  },
-  {
-    icon: Clock,
-    title: 'End-to-End Service',
-    description: 'From initial search to final handover, we manage every detail with precision.',
-  },
-  {
-    icon: FileCheck,
-    title: 'Legal Assurance',
-    description: 'Comprehensive documentation review ensures complete peace of mind in every transaction.',
-  },
-]
+// ==========================================
+// 1. THE SURYA STANDARD (Why Choose Us)
+// ==========================================
 
 export function WhyChooseUs() {
-  return (
-    <section style={styles.sectionBlack}>
-      <div className="w-full max-w-[1600px] mx-auto px-8 md:px-12 lg:px-20 relative z-10">
-        
-        <div style={{ textAlign: 'center', marginBottom: '96px' }}>
-          <span style={styles.overline}>Why Choose Us</span>
-          <h2 style={styles.heading}>The Surya Homes Difference</h2>
-          <p style={styles.paragraph}>
-            Trusted by over 1,000 families. Built on integrity, expertise, and unwavering commitment to excellence.
-          </p>
-        </div>
+  const containerRef = useRef(null);
+  const isInView = useInView(containerRef, { once: true, margin: "-10%" });
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-          {reasons.map((reason, i) => (
-            <motion.div
-              key={reason.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.8, delay: i * 0.1, ease: easeCustom }}
-              style={{ willChange: 'transform, opacity' }}
-            >
-              <div 
-                className="group"
-                style={styles.card}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = `${colors.gold}55`;
-                  e.currentTarget.style.backgroundColor = '#14202F';
-                  e.currentTarget.style.transform = 'translateY(-4px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = `${colors.white}08`;
-                  e.currentTarget.style.backgroundColor = colors.charcoal;
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
+  return (
+    <section 
+      ref={containerRef}
+      className="relative py-24 lg:py-40" 
+      style={{ backgroundColor: theme.navy }}
+    >
+      <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-20">
+        
+        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 relative">
+          
+          {/* Sticky Left Column: The Anchor */}
+          <div className="lg:w-5/12 flex flex-col items-start">
+            <div className="lg:sticky lg:top-40 w-full">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 1, ease: cinematicEase }}
+                className="flex items-center gap-4 mb-6 sm:mb-8"
               >
+                <div style={{ width: '40px', height: '1px', backgroundColor: theme.gold }} />
+                <span style={{ fontFamily: '"Inter", sans-serif', color: theme.gold, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.3em', fontWeight: 600 }}>
+                  The Surya Standard
+                </span>
+              </motion.div>
+
+              <motion.h2
+                initial={{ opacity: 0, y: 30 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                transition={{ duration: 1.2, delay: 0.1, ease: cinematicEase }}
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] mb-6 sm:mb-8"
+                style={{ fontFamily: '"Playfair Display", serif', color: theme.ivory, lineHeight: 1.1 }}
+              >
+                Built on <br />
+                <span style={{ fontStyle: 'italic', color: theme.gold }}>Absolute</span> Trust.
+              </motion.h2>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 1.2, delay: 0.2, ease: cinematicEase }}
+                className="text-sm sm:text-base max-w-md"
+                style={{ fontFamily: '"Inter", sans-serif', color: `${theme.ivory}80`, lineHeight: 1.6 }}
+              >
+                For over a decade, we have facilitated the acquisition of the region's most significant properties. Our reputation is built on a foundation of unyielding integrity and precision.
+              </motion.p>
+            </div>
+          </div>
+
+          {/* Scrolling Right Column: The Editorial Ledger */}
+          <div className="lg:w-7/12 flex flex-col pt-8 lg:pt-0">
+            {pillars.map((pillar, i) => (
+              <motion.div
+                key={pillar.id}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-10%" }}
+                transition={{ duration: 1, delay: i * 0.15, ease: cinematicEase }}
+                className="group flex flex-col sm:flex-row items-start sm:items-baseline gap-6 sm:gap-12 py-10 sm:py-16 border-t cursor-default"
+                style={{ borderColor: 'rgba(250, 248, 243, 0.15)', willChange: 'transform, opacity' }}
+              >
+                {/* Monumental Number */}
                 <div 
-                  className="group-hover:bg-[#D4AF37]/12 group-hover:border-[#D4AF37]"
-                  style={styles.iconBox}
+                  className="text-4xl sm:text-5xl lg:text-6xl transition-colors duration-500 shrink-0"
+                  style={{ fontFamily: '"Playfair Display", serif', color: 'rgba(216, 155, 0, 0.4)' }}
                 >
-                  <reason.icon size={22} style={{ color: colors.gold }} strokeWidth={1.5} />
+                  <span className="group-hover:text-[#D89B00] transition-colors duration-700">
+                    {pillar.id}
+                  </span>
                 </div>
-                
-                <h3 style={{ color: colors.white, fontSize: '1.5rem', fontWeight: 300, marginBottom: '16px', letterSpacing: '-0.01em' }}>
-                  {reason.title}
-                </h3>
-                
-                <p style={{ color: `${colors.white}65`, fontSize: '14px', lineHeight: 1.7, fontWeight: 300 }}>
-                  {reason.description}
-                </p>
-              </div>
-            </motion.div>
-          ))}
+
+                {/* Pillar Content */}
+                <div className="flex flex-col transform transition-transform duration-500 group-hover:translate-x-2">
+                  <h3 
+                    className="text-2xl sm:text-3xl lg:text-4xl mb-4"
+                    style={{ fontFamily: '"Playfair Display", serif', color: theme.ivory }}
+                  >
+                    {pillar.title}
+                  </h3>
+                  <p 
+                    className="text-sm sm:text-base max-w-lg"
+                    style={{ fontFamily: '"Inter", sans-serif', color: `${theme.ivory}70`, lineHeight: 1.7 }}
+                  >
+                    {pillar.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-export function Stats() {
-  return (
-    <section style={styles.sectionNavy}>
-      <div 
-        className="absolute inset-0 pointer-events-none opacity-[0.03]" 
-        style={{ backgroundImage: 'url("/grid-pattern.svg")' }}
-      />
+// ==========================================
+// 2. THE LEGACY (Stats Matrix)
+// ==========================================
 
-      <div className="w-full max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 sm:gap-16 lg:gap-0">
-          {STATS.map((stat, i) => (
+export function Stats() {
+  const containerRef = useRef(null);
+  const isInView = useInView(containerRef, { once: true, margin: "-10%" });
+
+  // Fallback data if STATS is undefined/empty
+  const displayStats = STATS?.length ? STATS : [
+    { value: '₹5K+', label: 'Crore Managed' },
+    { value: '15', label: 'Years of Legacy' },
+    { value: '100%', label: 'Discretion' },
+    { value: '250+', label: 'Estates Curated' }
+  ];
+
+  return (
+    <section 
+      ref={containerRef}
+      className="py-24 sm:py-32 lg:py-40 relative"
+      style={{ backgroundColor: theme.ivory }}
+    >
+      {/* Absolute Minimalist Architecture */}
+      <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-20 relative z-10">
+        
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 1, ease: cinematicEase }}
+          className="flex justify-center mb-16 sm:mb-24"
+        >
+          <span style={{ fontFamily: '"Inter", sans-serif', color: theme.navy, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.4em', fontWeight: 600 }}>
+            By The Numbers
+          </span>
+        </motion.div>
+
+        {/* The Typographic Matrix */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-16 lg:gap-8">
+          {displayStats.map((stat, i) => (
             <motion.div
               key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.6, delay: i * 0.1, ease: easeCustom }}
-              className="text-center lg:border-r border-white/10 lg:last:border-0 group cursor-default"
+              viewport={{ once: true, margin: '-10%' }}
+              transition={{ duration: 1, delay: i * 0.15, ease: cinematicEase }}
+              className="flex flex-col items-center text-center group cursor-default relative"
+              style={{ willChange: 'transform, opacity' }}
             >
+              {/* Subtle hover scaling on the number */}
               <motion.div 
                 whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.6, ease: cinematicEase }}
+                className="text-[4rem] sm:text-[5rem] lg:text-[6rem] leading-none mb-4 sm:mb-6 transition-colors duration-500"
                 style={{ 
-                  color: colors.white, 
-                  fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', 
-                  fontWeight: 300, 
-                  letterSpacing: '-0.03em',
-                  marginBottom: '12px',
-                  transition: 'color 0.3s ease'
+                  fontFamily: '"Playfair Display", serif', 
+                  color: theme.navy,
+                  letterSpacing: '-0.02em',
                 }}
-                className="group-hover:text-[#D4AF37]"
               >
                 {stat.value}
               </motion.div>
+              
               <div 
+                className="text-[9px] sm:text-[11px]"
                 style={{ 
-                  color: colors.gold, 
-                  fontSize: 'clamp(9px, 1.8vw, 10px)', 
+                  fontFamily: '"Inter", sans-serif', 
+                  color: `${theme.navy}80`, 
                   textTransform: 'uppercase', 
-                  letterSpacing: '0.25em',
+                  letterSpacing: '0.3em',
                   fontWeight: 500
                 }}
               >
@@ -211,7 +218,8 @@ export function Stats() {
             </motion.div>
           ))}
         </div>
+        
       </div>
     </section>
-  )
+  );
 }

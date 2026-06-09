@@ -22,7 +22,6 @@ export default function Home() {
       <LuxuryLifestyle />
       <Testimonials />
       <BlogPreview />
-      <Newsletter />
       <CTASection />
     </Layout>
   )

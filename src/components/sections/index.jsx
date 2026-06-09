@@ -1,138 +1,118 @@
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { ArrowRight, Building2, Home, MapPin, Briefcase, Layers } from 'lucide-react'
-import { ScrollReveal } from '../ui'
-import BlogCard from '../blog/BlogCard'
-import NewsletterForm from '../forms/NewsletterForm'
-import { getFeaturedBlogs } from '../../data/blogs'
+import { Link } from 'react-router-dom';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { useRef } from 'react';
 
-// High-end easing curve
-const easeCustom = [0.16, 1, 0.3, 1]
+// Assuming these are your internal components
+import { ScrollReveal } from '../ui';
+import BlogCard from '../blog/BlogCard';
+import NewsletterForm from '../forms/NewsletterForm';
+import { getFeaturedBlogs } from '../../data/blogs';
+import heroImg from '../../assets/hero.png';
 
-// Precise visual control
-const colors = {
-  navy: '#0A0F1C',
-  charcoal: '#1A1A1A',
-  black: '#000000',
-  gold: '#D4AF37',
-  white: '#FFFFFF',
-}
+// High-end cinematic easing curve
+const cinematicEase = [0.25, 1, 0.5, 1];
 
-const styles = {
-  overline: {
-    color: colors.gold,
-    fontSize: '10px',
-    textTransform: 'uppercase',
-    letterSpacing: '0.3em',
-    fontWeight: 500,
-    display: 'block',
-    marginBottom: '16px'
-  },
-  heading: {
-    color: colors.white,
-    fontSize: '2.5rem',
-    fontWeight: 300,
-    letterSpacing: '-0.02em',
-    lineHeight: 1.2,
-    marginBottom: '16px'
-  },
-  paragraph: {
-    color: `${colors.white}60`,
-    fontSize: '14px',
-    lineHeight: 1.6,
-    fontWeight: 300,
-  },
-  btnPrimary: {
-    backgroundColor: colors.gold,
-    color: colors.black,
-    fontSize: '11px',
-    textTransform: 'uppercase',
-    letterSpacing: '0.15em',
-    padding: '14px 28px',
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '8px',
-    fontWeight: 500,
-    transition: 'all 0.3s ease',
-  },
-  btnSecondary: {
-    border: `1px solid ${colors.gold}50`,
-    color: colors.gold,
-    fontSize: '11px',
-    textTransform: 'uppercase',
-    letterSpacing: '0.15em',
-    padding: '14px 28px',
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '8px',
-    transition: 'all 0.3s ease',
-  }
-}
+// Strict Surya Homes Palette
+const theme = {
+  navy: '#082F67',
+  charcoal: '#0A0F1A',
+  gold: '#D89B00',
+  ivory: '#FAF8F3',
+  beige: '#F5F1E8',
+};
+
+// ==========================================
+// 1. PROPERTY CATEGORIES (Unsymmetric Grid)
+// ==========================================
 
 const categories = [
-  { label: 'Apartments', icon: Building2, count: '200+ homes', path: '/properties?type=Apartment', image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=75' },
-  { label: 'Villas', icon: Home, count: '45+ homes', path: '/properties?type=Villa', image: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=600&q=75' },
-  { label: 'Plots', icon: MapPin, count: '150+ spaces', path: '/properties?type=Plot', image: 'https://images.unsplash.com/photo-1416331108676-a22ccb276e35?w=600&q=75' },
-  { label: 'Offices', icon: Briefcase, count: '60+ spaces', path: '/properties?type=Commercial', image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=75' },
-  { label: 'Penthouses', icon: Layers, count: '20+ homes', path: '/properties?type=Penthouse', image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=75' },
-]
+  { 
+    label: 'Villas', count: '45 Homes', path: '/properties?type=Villa', 
+    image: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=1200&q=80', 
+    // Spans wide across the top
+    span: 'md:col-span-8 md:row-span-1' 
+  },
+  { 
+    label: 'Apartments', count: '200 Homes', path: '/properties?type=Apartment', 
+    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80', 
+    // Spans tall down the right side
+    span: 'md:col-span-4 md:row-span-2' 
+  },
+  { 
+    label: 'Penthouses', count: '20 Homes', path: '/properties?type=Penthouse', 
+    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80', 
+    // Fills the bottom left
+    span: 'md:col-span-4 md:row-span-1' 
+  },
+  { 
+    label: 'Commercial', count: '60 Spaces', path: '/properties?type=Commercial', 
+    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80', 
+    // Fills the bottom middle
+    span: 'md:col-span-4 md:row-span-1' 
+  },
+];
 
 export function PropertyCategories() {
   return (
-    <section style={{ backgroundColor: colors.black, padding: '100px 0' }}>
-      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12">
+    <section className="py-24 lg:py-40" style={{ backgroundColor: theme.beige }}>
+      <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-20">
         
-        <div className="text-center mb-16">
-          <span style={styles.overline}>Property Types</span>
-          <h2 style={styles.heading}>What are you looking for?</h2>
-          <p style={{ ...styles.paragraph, maxWidth: '500px', margin: '0 auto' }}>
-            Find the right type of property for your needs and budget.
+        {/* Simple, Confident Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-16 border-b pb-8" style={{ borderColor: `${theme.navy}15` }}>
+          <div className="max-w-2xl">
+            <span className="block mb-4 text-[10px] uppercase tracking-[0.3em] font-bold" style={{ fontFamily: '"Inter", sans-serif', color: theme.gold }}>
+              What We Offer
+            </span>
+            <h2 className="text-5xl sm:text-6xl lg:text-7xl m-0 leading-[1.1]" style={{ fontFamily: '"Playfair Display", serif', color: theme.navy }}>
+              Explore Our <span style={{ fontStyle: 'italic' }}>Homes.</span>
+            </h2>
+          </div>
+          <p className="text-base m-0 max-w-sm" style={{ fontFamily: '"Inter", sans-serif', color: `${theme.navy}80`, lineHeight: 1.6 }}>
+            Beautifully designed spaces for every lifestyle. Find the perfect place for your family or business.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        {/* Asymmetrical Editorial Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 lg:gap-6 auto-rows-[300px] lg:auto-rows-[400px]">
           {categories.map((cat, i) => (
             <motion.div
               key={cat.label}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.6, ease: easeCustom }}
-              style={{ willChange: 'transform, opacity' }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ delay: i * 0.1, duration: 1, ease: cinematicEase }}
+              className={`group relative overflow-hidden bg-black cursor-pointer ${cat.span}`}
+              style={{ willChange: 'transform' }}
             >
-              <Link 
-                to={cat.path} 
-                className="group block relative overflow-hidden bg-[#1A1A1A] aspect-[3/4]"
-                style={{ border: `1px solid ${colors.white}0A`, transition: 'border-color 0.4s ease' }}
-                onMouseEnter={(e) => e.currentTarget.style.borderColor = `${colors.gold}50`}
-                onMouseLeave={(e) => e.currentTarget.style.borderColor = `${colors.white}0A`}
-              >
+              <Link to={cat.path} className="block w-full h-full text-decoration-none relative">
+                
+                {/* Image */}
                 <img
                   src={cat.image}
                   alt={cat.label}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.5, transition: 'all 0.8s ease', willChange: 'transform' }}
-                  className="group-hover:scale-110 group-hover:opacity-80"
-                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover opacity-80 transition-all duration-1000 ease-[0.25,1,0.5,1] group-hover:scale-105 group-hover:opacity-100"
+                  style={{ willChange: 'transform' }}
                 />
                 
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none" />
+                {/* Gradient for Text Legibility */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1A]/90 via-[#0A0F1A]/20 to-transparent pointer-events-none transition-opacity duration-700 group-hover:opacity-70" />
 
-                <div className="absolute inset-0 p-6 flex flex-col justify-end">
-                  <cat.icon size={20} style={{ color: colors.gold, marginBottom: '12px' }} strokeWidth={1.5} />
-                  <div style={{ color: colors.white, fontSize: '1.1rem', fontWeight: 300, letterSpacing: '0.02em' }}>
-                    {cat.label}
+                {/* Content Embedded Inside Image */}
+                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 lg:p-10 flex justify-between items-end">
+                  <div>
+                    <h3 className="text-3xl sm:text-4xl mb-2" style={{ fontFamily: '"Playfair Display", serif', color: theme.ivory, lineHeight: 1.1 }}>
+                      {cat.label}
+                    </h3>
+                    <div style={{ fontFamily: '"Inter", sans-serif', color: theme.gold, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 500 }}>
+                      {cat.count}
+                    </div>
                   </div>
-                  <div style={{ color: `${colors.white}40`, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: '4px' }}>
-                    {cat.count}
+                  
+                  {/* Subtle Interactive Icon */}
+                  <div className="w-10 h-10 rounded-full border flex items-center justify-center transform translate-y-4 opacity-0 transition-all duration-500 ease-[0.25,1,0.5,1] group-hover:translate-y-0 group-hover:opacity-100 backdrop-blur-sm" style={{ borderColor: 'rgba(250, 248, 243, 0.3)', backgroundColor: 'rgba(250, 248, 243, 0.1)' }}>
+                    <ArrowUpRight size={18} color={theme.ivory} />
                   </div>
-                </div>
-
-                <div className="absolute top-4 right-4 overflow-hidden">
-                  <ArrowRight 
-                    size={16} 
-                    style={{ color: colors.gold, transform: 'translateX(-100%)', opacity: 0, transition: 'all 0.4s ease', willChange: 'transform' }} 
-                    className="group-hover:translate-x-0 group-hover:opacity-100"
-                  />
                 </div>
               </Link>
             </motion.div>
@@ -140,134 +120,185 @@ export function PropertyCategories() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
+// ==========================================
+// 2. WHY SURYA HOMES (Light Theme)
+// ==========================================
+
 export function LuxuryLifestyle() {
+  const ethosPoints = [
+    { title: 'Built to Last', desc: 'We use the highest quality materials so your home stays beautiful and safe for decades.' },
+    { title: 'Honest Prices', desc: 'No hidden fees or confusing paperwork. What you see is exactly what you pay.' },
+    { title: 'Great Locations', desc: 'We only build in safe, clean neighborhoods that grow in value over time.' },
+    { title: 'Always Here For You', desc: 'Our team is ready to help you with everything, even years after you move in.' },
+  ];
+
   return (
-    <section style={{ backgroundColor: colors.charcoal, padding: '120px 0', overflow: 'hidden', borderTop: `1px solid ${colors.white}05` }}>
-      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+    <section className="py-24 lg:py-40 relative" style={{ backgroundColor: theme.ivory }}>
+      <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-20 relative z-10">
+        
+        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-center">
           
-          {/* Strict Masonry Image Grid */}
-          <ScrollReveal>
-            <div className="grid grid-cols-2 gap-4">
-              <img
-                src="https://images.unsplash.com/photo-1600607687920-4e03af7a7b07?w=600&q=80"
-                alt="Modern Home"
-                style={{ width: '100%', height: '100%', objectFit: 'cover', aspectRatio: '3/4', opacity: 0.9 }}
-                loading="lazy"
-              />
-              <div className="flex flex-col gap-4 pt-12">
-                <img
-                  src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=600&q=80"
-                  alt="Clean Interior"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', aspectRatio: '1/1', opacity: 0.9 }}
-                  loading="lazy"
-                />
-                <img
-                  src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=600&q=80"
-                  alt="Nice View"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', aspectRatio: '1/1', opacity: 0.9 }}
-                  loading="lazy"
-                />
-              </div>
-            </div>
-          </ScrollReveal>
-
-          {/* Text Content */}
-          <div>
-            <span style={styles.overline}>Why Choose Us</span>
-            <h2 style={styles.heading}>Built for Better Living.</h2>
-            <p style={{ ...styles.paragraph, marginBottom: '32px' }}>
-              We pick the best homes in safe, clean locations. We believe buying a home should be simple, honest, and easy for you.
-            </p>
-
-            <div className="flex flex-col gap-4 mb-12">
-              {[
-                '100% legally checked and safe properties.',
-                'Clear prices. No hidden fees.',
-                'One agent to help you from start to finish.',
-                'Help with home care even after you buy.',
-              ].map((point, i) => (
-                <motion.div 
-                  key={i}
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.5 }}
-                  className="flex items-start gap-4"
-                >
-                  {/* Minimalist dot instead of a big checkmark box */}
-                  <span style={{ width: '4px', height: '4px', backgroundColor: colors.gold, marginTop: '8px', flexShrink: 0 }} />
-                  <p style={{ color: `${colors.white}80`, fontSize: '14px', fontWeight: 300 }}>{point}</p>
-                </motion.div>
-              ))}
-            </div>
-
-            <Link 
-              to="/about" 
-              className="group"
-              style={styles.btnSecondary}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = colors.gold; e.currentTarget.style.color = colors.black; }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = colors.gold; }}
+          {/* Left: Overlapping Image Gallery */}
+          <div className="relative h-[400px] sm:h-[500px] lg:h-[700px] w-full flex justify-center items-center">
+            {/* Back Image */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.2, ease: cinematicEase }}
+              className="absolute top-0 left-0 lg:left-0 w-[75%] lg:w-[80%] h-[75%] lg:h-[80%] z-10 shadow-2xl"
             >
-              Learn About Us <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-            </Link>
+              <img src={heroImg} alt="Surya Homes Luxury Property" className="w-full h-full object-cover" />
+            </motion.div>
+            
+            {/* Front Image (Light border to match Ivory background) */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.2, delay: 0.2, ease: cinematicEase }}
+              className="absolute bottom-0 right-0 w-[60%] lg:w-[55%] h-[60%] lg:h-[55%] z-20 border-8 shadow-2xl"
+              style={{ borderColor: theme.ivory }}
+            >
+              <img src={heroImg} alt="Surya Homes Interior" className="w-full h-full object-cover" />
+            </motion.div>
           </div>
+
+          {/* Right: Navy Text on Ivory Background */}
+          <div className="w-full lg:w-1/2">
+            <ScrollReveal>
+              <span className="block mb-4 text-[10px] uppercase tracking-[0.3em] font-bold" style={{ fontFamily: '"Inter", sans-serif', color: theme.gold }}>
+                Why Choose Us
+              </span>
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl mb-8 leading-[1.1]" style={{ fontFamily: '"Playfair Display", serif', color: theme.navy }}>
+                Quality You <br />
+                <span style={{ fontStyle: 'italic', color: theme.gold }}>Can Trust.</span>
+              </h2>
+              <p className="text-base mb-12 max-w-lg" style={{ fontFamily: '"Inter", sans-serif', color: `${theme.navy}80`, lineHeight: 1.6 }}>
+                Buying a home is a big decision. We make it easy, safe, and exciting. Here is what makes a Surya home different.
+              </p>
+
+              <div className="flex flex-col gap-8 mb-12">
+                {ethosPoints.map((point, i) => (
+                  <motion.div 
+                    key={i}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1, duration: 0.8, ease: cinematicEase }}
+                    className="flex items-start gap-6"
+                  >
+                    <span className="text-2xl mt-[-4px]" style={{ fontFamily: '"Playfair Display", serif', color: theme.gold }}>
+                      0{i + 1}.
+                    </span>
+                    <div>
+                      <h4 className="text-xl sm:text-2xl mb-2" style={{ fontFamily: '"Playfair Display", serif', color: theme.navy }}>
+                        {point.title}
+                      </h4>
+                      <p className="text-sm" style={{ fontFamily: '"Inter", sans-serif', color: `${theme.navy}70`, lineHeight: 1.6 }}>
+                        {point.desc}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              <Link 
+                to="/about" 
+                className="group inline-flex items-center gap-3 cursor-pointer pb-2 border-b"
+                style={{ borderColor: 'rgba(8, 47, 103, 0.2)', transition: 'border-color 0.4s ease' }}
+                onMouseEnter={(e) => e.currentTarget.style.borderBottomColor = theme.gold}
+                onMouseLeave={(e) => e.currentTarget.style.borderBottomColor = 'rgba(8, 47, 103, 0.2)'}
+              >
+                <span style={{ fontFamily: '"Inter", sans-serif', color: theme.navy, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.2em', fontWeight: 600 }}>
+                  Read Our Story
+                </span>
+                <ArrowRight size={14} style={{ color: theme.gold, transition: 'transform 0.4s ease' }} className="group-hover:translate-x-2" />
+              </Link>
+            </ScrollReveal>
+          </div>
+
         </div>
       </div>
     </section>
-  )
+  );
 }
 
+// ==========================================
+// 3. LATEST NEWS (Blog Preview)
+// ==========================================
+
 export function BlogPreview() {
-  const blogs = getFeaturedBlogs()
+  const blogs = getFeaturedBlogs();
 
   return (
-    <section style={{ backgroundColor: colors.black, padding: '100px 0' }}>
-      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12">
+    <section className="py-24 lg:py-40" style={{ backgroundColor: theme.beige }}>
+      <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-20">
         
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 border-b border-white/5 pb-8">
-          <div>
-            <span style={styles.overline}>Helpful Articles</span>
-            <h2 style={{ ...styles.heading, marginBottom: 0 }}>Latest Market News.</h2>
-            <p style={{ ...styles.paragraph, marginTop: '12px' }}>
-              Simple tips and updates to help you buy or sell a home.
-            </p>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 lg:gap-8 mb-16 lg:mb-20">
+          <div className="max-w-2xl">
+            <span className="block mb-4 text-[10px] uppercase tracking-[0.3em] font-bold" style={{ fontFamily: '"Inter", sans-serif', color: theme.navy }}>
+              Market Updates
+            </span>
+            <h2 className="text-5xl sm:text-6xl lg:text-7xl m-0 leading-[1.1]" style={{ fontFamily: '"Playfair Display", serif', color: theme.navy }}>
+              Latest <span style={{ fontStyle: 'italic' }}>News.</span>
+            </h2>
           </div>
           
           <Link 
             to="/blog" 
-            className="group flex items-center gap-3"
-            style={{ color: colors.gold, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', paddingBottom: '4px' }}
+            className="group inline-flex self-start md:self-end items-center gap-3 cursor-pointer pb-2 border-b"
+            style={{ borderColor: `${theme.navy}30`, transition: 'border-color 0.4s ease' }}
+            onMouseEnter={(e) => e.currentTarget.style.borderBottomColor = theme.gold}
+            onMouseLeave={(e) => e.currentTarget.style.borderBottomColor = `${theme.navy}30`}
           >
-            Read All Articles
-            <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
+            <span style={{ fontFamily: '"Inter", sans-serif', color: theme.navy, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.2em', fontWeight: 600 }}>
+              View All Articles
+            </span>
+            <ArrowRight size={14} style={{ color: theme.gold, transition: 'transform 0.4s ease' }} className="group-hover:translate-x-2" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Responsive Grid for Blogs */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-16">
           {blogs.slice(0, 3).map((blog, i) => (
-            <BlogCard key={blog.id} blog={blog} index={i} />
+            <motion.div
+              key={blog.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.8, ease: cinematicEase }}
+              style={{ willChange: 'transform, opacity' }}
+            >
+              <BlogCard blog={blog} index={i} />
+            </motion.div>
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }
+
+// ==========================================
+// 4. STAY IN TOUCH (Newsletter)
+// ==========================================
 
 export function Newsletter() {
   return (
-    <section style={{ backgroundColor: colors.navy, padding: '100px 0', position: 'relative', borderTop: `1px solid ${colors.white}05`, borderBottom: `1px solid ${colors.white}05` }}>
-      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 text-center">
+    <section className="py-24 lg:py-32" style={{ backgroundColor: theme.navy }}>
+      <div className="w-full max-w-[800px] mx-auto px-6 text-center">
         <ScrollReveal>
-          <span style={{ ...styles.overline, display: 'inline-block' }}>Get Weekly Updates</span>
-          <h2 style={{ ...styles.heading, fontSize: '2.5rem' }}>
+          <span className="block mb-6 text-[10px] uppercase tracking-[0.3em] font-bold" style={{ fontFamily: '"Inter", sans-serif', color: theme.gold }}>
+            Stay Connected
+          </span>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl mb-6" style={{ fontFamily: '"Playfair Display", serif', color: theme.ivory, fontWeight: 400 }}>
             Join Our Email List.
           </h2>
-          <p style={{ ...styles.paragraph, maxWidth: '400px', margin: '0 auto 40px auto' }}>
-            Be the first to see new homes, price drops, and local news. No spam, just good info.
+          <p className="text-base mx-auto mb-10 sm:mb-12 max-w-md" style={{ fontFamily: '"Inter", sans-serif', color: `${theme.ivory}80`, lineHeight: 1.6 }}>
+            Be the first to know about new homes, special offers, and local news. We never send spam.
           </p>
           
           <div className="max-w-md mx-auto">
@@ -276,53 +307,78 @@ export function Newsletter() {
         </ScrollReveal>
       </div>
     </section>
-  )
+  );
 }
 
-export function CTASection() {
-  return (
-    <section style={{ position: 'relative', padding: '120px 0', backgroundColor: colors.black, overflow: 'hidden' }}>
-      {/* Background Image with Heavy Overlay for Text Readability */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=60"
-          alt="Luxury Home"
-          style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.15 }}
-        />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, #000000 0%, transparent 100%)' }} />
-      </div>
+// ==========================================
+// 5. READY TO BEGIN? (CTA)
+// ==========================================
 
-      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 relative z-10">
-        <div style={{ maxWidth: '600px' }}>
-          <ScrollReveal>
-            <span style={styles.overline}>Next Steps</span>
-            <h2 style={{ ...styles.heading, fontSize: '3.5rem' }}>
-              Ready to Find <br />
-              <span style={{ color: `${colors.white}50`, fontStyle: 'italic' }}>Your Home?</span>
-            </h2>
-            <p style={{ ...styles.paragraph, marginBottom: '40px', fontSize: '16px' }}>
-              Talk to our team today. It is free to ask questions, and we are happy to help you find the right place for your budget.
-            </p>
+export function CTASection() {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
+  
+  // Parallax effect reduced slightly for better mobile performance
+  const y = useTransform(scrollYProgress, [0, 1], ['-10%', '10%']);
+
+  return (
+    <section ref={ref} className="relative py-32 lg:py-48 flex items-center overflow-hidden" style={{ backgroundColor: theme.charcoal }}>
+      
+      {/* Background Image */}
+      <motion.div className="absolute inset-0 z-0" style={{ y, willChange: 'transform' }}>
+        <img
+          src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80"
+          alt="Beautiful Home"
+          className="w-full h-full object-cover opacity-40"
+        />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #0A0F1A 0%, rgba(10, 15, 26, 0.2) 100%)' }} />
+      </motion.div>
+
+      <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-20 relative z-10 flex flex-col items-center text-center">
+        <ScrollReveal>
+          <span className="block mb-6 text-[10px] uppercase tracking-[0.3em] font-bold" style={{ fontFamily: '"Inter", sans-serif', color: theme.ivory }}>
+            Next Steps
+          </span>
+          <h2 
+            className="text-5xl sm:text-6xl lg:text-[7rem] mb-8"
+            style={{ fontFamily: '"Playfair Display", serif', color: theme.ivory, lineHeight: 1.05 }}
+          >
+            Ready to find <br />
+            <span style={{ color: theme.gold, fontStyle: 'italic' }}>your home?</span>
+          </h2>
+          <p className="text-base mx-auto mb-12 max-w-lg" style={{ fontFamily: '"Inter", sans-serif', color: `${theme.ivory}80`, lineHeight: 1.6 }}>
+            Our team is here to answer your questions and help you find exactly what you're looking for.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full sm:w-auto">
+            <Link 
+              to="/contact" 
+              className="group relative overflow-hidden flex items-center justify-center w-full sm:w-auto px-10 py-5 cursor-pointer"
+              style={{ backgroundColor: theme.gold }}
+            >
+              <div 
+                className="absolute inset-0 origin-bottom transform scale-y-0 transition-transform duration-500 ease-[0.25,1,0.5,1] group-hover:scale-y-100 z-0"
+                style={{ backgroundColor: theme.ivory, willChange: 'transform' }}
+              />
+              <span className="relative z-10 transition-colors duration-500 group-hover:text-[#082F67]" style={{ fontFamily: '"Inter", sans-serif', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.2em', fontWeight: 600, color: theme.charcoal }}>
+                Talk To Us Today
+              </span>
+            </Link>
             
-            <div className="flex flex-wrap items-center gap-4">
-              <Link 
-                to="/contact" 
-                className="group hover:bg-white hover:text-black"
-                style={styles.btnPrimary}
-              >
-                Talk to Us <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link 
-                to="/properties" 
-                className="group hover:bg-[#D4AF37] hover:text-black hover:border-[#D4AF37]"
-                style={styles.btnSecondary}
-              >
-                See Homes First
-              </Link>
-            </div>
-          </ScrollReveal>
-        </div>
+            <Link 
+              to="/properties" 
+              className="group flex items-center justify-center w-full sm:w-auto px-10 py-5 cursor-pointer"
+              style={{ border: `1px solid rgba(250, 248, 243, 0.4)`, transition: 'all 0.4s ease' }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = theme.ivory; e.currentTarget.style.backgroundColor = 'rgba(250, 248, 243, 0.1)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(250, 248, 243, 0.4)'; e.currentTarget.style.backgroundColor = 'transparent'; }}
+            >
+              <span style={{ fontFamily: '"Inter", sans-serif', color: theme.ivory, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.2em', fontWeight: 600 }}>
+                View All Homes
+              </span>
+            </Link>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
-  )
+  );
 }

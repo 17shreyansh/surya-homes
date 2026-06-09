@@ -1,166 +1,153 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { MapPin, BedDouble, Bath, Maximize2, ArrowRight } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
+import { forwardRef } from 'react'
 
 const colors = {
   charcoal: '#101826',
   gold: '#D4AF37',
   white: '#F8F6F2',
+  ivory: '#F8F6F2',
   obsidian: '#08111F'
 }
 
 const easeCustom = [0.16, 1, 0.3, 1]
 
-export default function PropertyCard({ property, index = 0 }) {
-  const { slug, title, type, status, priceDisplay, location, bedrooms, bathrooms, area, images, badge } = property
+export const PropertyCard = forwardRef(function PropertyCard({ property, index = 0 }, ref) {
+  const { slug, title, type, priceDisplay, location, bedrooms, bathrooms, area, images, badge } = property;
+
+  const specs = [
+    bedrooms && `${bedrooms} BEDS`,
+    bathrooms && `${bathrooms} BATHS`,
+    area && `${area.toLocaleString()} SQ FT`
+  ].filter(Boolean).join('  •  ');
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.6, delay: index * 0.05, ease: easeCustom }}
+      exit={{ opacity: 0, scale: 0.98 }}
+      transition={{ duration: 0.8, delay: index * 0.08, ease: easeCustom }}
       style={{ willChange: 'transform, opacity' }}
-      className="group h-full"
+      className="group relative cursor-pointer"
     >
-      <Link to={`/properties/${slug}`} className="block w-full h-full">
-        <div 
-          style={{ 
-            backgroundColor: colors.charcoal,
-            border: `1px solid ${colors.white}0D`,
-            transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column'
-          }}
-          className="group-hover:border-[#D4AF37]/50 group-hover:shadow-2xl"
-        >
-          <div className="relative overflow-hidden aspect-[5/4] bg-[#000]">
-            <img
-              src={images[0]}
-              alt={title}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                opacity: 0.88,
-                willChange: 'transform',
-                transition: 'transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)'
-              }}
-              className="group-hover:scale-110 group-hover:opacity-100"
-              loading="lazy"
-            />
-            <div 
-              className="absolute inset-0 pointer-events-none" 
-              style={{ background: 'linear-gradient(to top, #101826 0%, transparent 50%)' }} 
-            />
+      <Link to={`/properties/${slug}`} style={{ display: 'block', width: '100%', height: '100%', textDecoration: 'none' }}>
+        
+        {/* Container: 3:4 Aspect Ratio */}
+        <div style={{ position: 'relative', width: '100%', aspectRatio: '3/4', overflow: 'hidden', backgroundColor: colors.charcoal }}>
+          
+          {/* Image */}
+          <img
+            src={images[0]}
+            alt={title}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              willChange: 'transform',
+              transition: 'transform 1.2s cubic-bezier(0.25, 1, 0.5, 1)',
+            }}
+            className="group-hover:scale-105"
+            loading="lazy"
+          />
+          
+          {/* Fixed Base Gradient for Legibility */}
+          <div 
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(to top, rgba(10, 15, 26, 0.85) 0%, rgba(10, 15, 26, 0.3) 40%, transparent 70%)',
+              pointerEvents: 'none'
+            }}
+          />
 
-            <div className="absolute top-5 left-5 flex flex-col gap-2">
-              {badge && (
-                <span style={{ 
-                  backgroundColor: colors.gold, 
-                  color: colors.obsidian, 
-                  fontSize: '9px', 
-                  textTransform: 'uppercase', 
-                  letterSpacing: '0.18em', 
-                  padding: '6px 12px',
-                  fontWeight: 600 
-                }}>
-                  {badge}
-                </span>
-              )}
-            </div>
-
-            <div className="absolute top-5 right-5">
+          {/* Interactive Top Section */}
+          <div style={{ position: 'absolute', top: '1.5rem', left: '1.5rem', right: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', zIndex: 10 }}>
+            {badge ? (
               <span style={{ 
-                backgroundColor: `${colors.obsidian}90`, 
-                backdropFilter: 'blur(10px)',
-                color: colors.white, 
+                backgroundColor: colors.gold, 
+                color: colors.charcoal, 
+                fontFamily: '"Inter", sans-serif',
                 fontSize: '9px', 
                 textTransform: 'uppercase', 
-                letterSpacing: '0.18em', 
+                letterSpacing: '0.2em', 
                 padding: '6px 12px',
-                border: `1px solid ${colors.white}25`
+                fontWeight: 600
               }}>
-                {status}
+                {badge}
               </span>
+            ) : <div />}
+
+            <div 
+              style={{ 
+                width: '36px', height: '36px', borderRadius: '50%', 
+                backgroundColor: 'rgba(250, 248, 243, 0.1)', border: '1px solid rgba(250, 248, 243, 0.2)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                transition: 'all 0.5s ease', backdropFilter: 'blur(4px)'
+              }}
+              className="group-hover:bg-[#D89B00] group-hover:border-[#D89B00]"
+            >
+              <ArrowUpRight size={16} style={{ color: colors.ivory, transition: 'color 0.5s ease' }} className="group-hover:text-[#0A0F1A]" />
             </div>
           </div>
 
-          <div className="p-8 flex flex-col flex-grow">
-            <div className="flex items-center justify-between mb-5">
-              <span style={{ color: `${colors.gold}95`, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.25em', fontWeight: 500 }}>
+          {/* Fixed Bottom Content */}
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '1.5rem 1.5rem 2rem 1.5rem', zIndex: 10, display: 'flex', flexDirection: 'column' }}>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <span style={{ fontFamily: '"Inter", sans-serif', color: colors.gold, fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.25em', fontWeight: 500 }}>
                 {type}
               </span>
-              <div 
-                style={{ 
-                  width: '36px', 
-                  height: '36px', 
-                  border: `1px solid ${colors.white}12`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.5s ease'
-                }}
-                className="group-hover:border-[#D4AF37] group-hover:bg-[#D4AF37]/12"
-              >
-                <ArrowRight 
-                  size={14} 
-                  style={{ color: `${colors.white}55`, willChange: 'transform', transition: 'all 0.5s ease' }} 
-                  className="group-hover:text-[#D4AF37] group-hover:translate-x-1"
-                />
-              </div>
-            </div>
-
-            <h3 style={{ color: colors.white, fontSize: '1.5rem', fontWeight: 300, lineHeight: 1.3, marginBottom: '12px', letterSpacing: '-0.01em' }}>
-              {title}
-            </h3>
-            
-            <div className="flex items-center gap-2 mb-8">
-              <MapPin size={13} style={{ color: colors.gold, flexShrink: 0 }} />
-              <span style={{ color: `${colors.white}65`, fontSize: '13px', fontWeight: 300, letterSpacing: '0.01em' }}>
+              <span style={{ width: '3px', height: '3px', borderRadius: '50%', backgroundColor: colors.gold }} />
+              <span style={{ fontFamily: '"Inter", sans-serif', color: colors.ivory, fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.25em', opacity: 0.8 }}>
                 {location}
               </span>
             </div>
 
-            <div style={{ height: '1px', backgroundColor: `${colors.white}0D`, margin: 'auto 0 24px 0', width: '100%' }} />
+            <h3 style={{ 
+              fontFamily: '"Playfair Display", serif', 
+              color: colors.ivory, 
+              fontSize: '1.75rem',
+              lineHeight: 1.2,
+              margin: '0 0 16px 0',
+              textShadow: '0 2px 10px rgba(0,0,0,0.3)'
+            }}>
+              {title}
+            </h3>
 
-            <div className="flex items-end justify-between">
-              <div>
-                <div style={{ color: colors.white, fontSize: '1.5rem', fontWeight: 300, letterSpacing: '-0.02em' }}>
+            <div style={{ height: '1px', backgroundColor: 'rgba(250, 248, 243, 0.15)', width: '100%', marginBottom: '16px' }} />
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: '12px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontFamily: '"Playfair Display", serif', color: colors.ivory, fontSize: '1.25rem', lineHeight: 1 }}>
                   {priceDisplay}
-                </div>
+                </span>
                 {property.pricePerSqFt && (
-                  <div style={{ color: `${colors.white}40`, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.12em', marginTop: '6px' }}>
+                  <span style={{ fontFamily: '"Inter", sans-serif', color: colors.gold, fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.15em', marginTop: '4px' }}>
                     ₹{property.pricePerSqFt.toLocaleString('en-IN')} / SQFT
-                  </div>
+                  </span>
                 )}
               </div>
 
-              <div className="flex items-center gap-5">
-                {bedrooms && (
-                  <div className="flex items-center gap-2" title="Bedrooms">
-                    <BedDouble size={15} style={{ color: `${colors.gold}85` }} />
-                    <span style={{ color: `${colors.white}85`, fontSize: '12px' }}>{bedrooms}</span>
-                  </div>
-                )}
-                {bathrooms && (
-                  <div className="flex items-center gap-2" title="Bathrooms">
-                    <Bath size={15} style={{ color: `${colors.gold}85` }} />
-                    <span style={{ color: `${colors.white}85`, fontSize: '12px' }}>{bathrooms}</span>
-                  </div>
-                )}
-                {area && (
-                  <div className="flex items-center gap-2" title="Area">
-                    <Maximize2 size={15} style={{ color: `${colors.gold}85` }} />
-                    <span style={{ color: `${colors.white}85`, fontSize: '12px' }}>{area.toLocaleString()}</span>
-                  </div>
-                )}
-              </div>
+              {specs && (
+                <span style={{ 
+                  fontFamily: '"Inter", sans-serif', 
+                  color: colors.ivory, 
+                  fontSize: '9px', 
+                  textTransform: 'uppercase', 
+                  letterSpacing: '0.15em',
+                  opacity: 0.9,
+                  textAlign: 'right'
+                }}>
+                  {specs}
+                </span>
+              )}
             </div>
           </div>
         </div>
       </Link>
     </motion.div>
-  )
-}
+  );
+});

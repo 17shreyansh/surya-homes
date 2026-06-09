@@ -12,7 +12,7 @@ import {
   CheckCircle2, Phone, Share2, Heart, ChevronRight
 } from 'lucide-react'
 import Layout from '../components/layout/Layout'
-import PropertyCard from '../components/property/PropertyCard'
+import { PropertyCard } from '../components/property/PropertyCard'
 import { InquiryForm } from '../components/forms'
 import { Newsletter } from '../components/sections'
 import { getPropertyBySlug, getRelatedProperties } from '../data/properties'
